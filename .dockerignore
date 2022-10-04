@@ -5,6 +5,6 @@
 **/.DS_Store
 **/.vscode
 **/node_modules
-**/dist
+#**/dist  # We need the local build distributions
 **/.env
 **/.cache

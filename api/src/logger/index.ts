@@ -10,6 +10,7 @@ import { build as pinoPretty } from 'pino-pretty';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { LogsStream } from './logs-stream.js';
 import { redactQuery } from './redact-query.js';
+import { contextWithReqId } from '../middleware/add-request-id.js';
 
 export const _cache: {
 	logger: Logger<never> | undefined;
@@ -59,6 +60,23 @@ export const createLogger = () => {
 		redact: {
 			paths: ['req.headers.authorization', 'req.headers.cookie'],
 			censor: REDACTED_TEXT,
+		},
+		mixin() {
+			const result: Record<string, any> = {};
+			const reqId = contextWithReqId.getStore();
+
+			if (reqId) {
+				let req = result['req'];
+
+				if (!req) {
+					req = {};
+					result['req'] = req;
+				}
+
+				req.id = reqId;
+			}
+
+			return result;
 		},
 	};
 
