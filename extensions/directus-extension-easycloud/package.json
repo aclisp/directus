@@ -1,0 +1,61 @@
+{
+	"name": "directus-extension-easycloud",
+	"version": "1.0.0",
+	"type": "module",
+	"directus:extension": {
+		"host": "^10.1.9",
+		"type": "bundle",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"entries": [
+			{
+				"type": "hook",
+				"name": "socketio-server",
+				"source": "src/socketio-server/index.ts"
+			},
+			{
+				"type": "endpoint",
+				"name": "socketio-server-api",
+				"source": "src/socketio-server-api/index.ts"
+			},
+			{
+				"type": "endpoint",
+				"name": "demo1",
+				"source": "src/demo1/index.ts"
+			},
+			{
+				"type": "hook",
+				"name": "serve-app",
+				"source": "src/serve-app/index.ts"
+			}
+		]
+	},
+	"description": "Please enter a description for your extension",
+	"icon": "extension",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-custom-bundle"
+	],
+	"scripts": {
+		"build": "directus-extension build --no-minify --sourcemap",
+		"dev": "directus-extension build -w --no-minify --sourcemap",
+		"link": "directus-extension link",
+		"add": "directus-extension add"
+	},
+	"dependencies": {
+		"@directus/api": "workspace:*",
+		"@directus/types": "workspace:*",
+		"@directus/extensions": "workspace:*",
+		"socket.io": "4.8.1",
+		"express": "4.21.2"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "workspace:*",
+		"@types/node": "22.13.8",
+		"@types/express": "4.17.21",
+		"typescript": "5.8.2"
+	}
+}

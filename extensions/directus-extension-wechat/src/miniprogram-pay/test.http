@@ -1,0 +1,42 @@
+### 测试下单
+
+POST http://localhost:8055/wechat-miniprogram-pay/create-order/wechatoffiaccount
+Authorization: Bearer U7-8LBk5HR74bLaQ_OrSPYR_6cGApmj-
+Content-Type: application/json
+
+{
+    "name":"《中国舞蹈考级教材》教师资格培训班",
+    "product":"15573dca-d014-4816-be6d-d17878d1f375",
+    "image":"d317ce12-6b12-4698-90cd-c786f7bee142",
+    "order_feature_list":[
+        {"name":"时间和级别","value":"寒假班，2月19日～22日，1～3级"},
+        {"name":"道具费","value":"道具费，4～6级，30元"},
+        {"name":"服装费","value":"集赞赠送服装"}
+    ],
+    "total_price":1
+}
+
+### 支付回调
+
+POST http://localhost:8055/wechat-miniprogram-pay/create-order-notify
+Content-Type: application/json
+
+{
+    "id": "679679ff-742a-5a6b-af64-b45ba51f4ac7",
+    "create_time": "2024-03-07T16:51:04+08:00",
+    "resource_type": "encrypt-resource",
+    "event_type": "TRANSACTION.SUCCESS",
+    "summary": "支付成功",
+    "resource": {
+        "original_type": "transaction",
+        "algorithm": "AEAD_AES_256_GCM",
+        "ciphertext": "/a427kk1/10050inJo+WTz/08Kbmf0Jb7N1Avn4aEhTvxAQ7y04WQ6LAR76ZyPU5tVbUv+I3Zen7i7OUH4NKc6/vauuCUoQaeLx+1W/JFmFi7DkhJ5q72lG6qSxGJwNsZJMfj7ng46+KqwYCcr5P/yMgn0shGnOnDmLKYIvEVS/RTFwYMmiAKeaKvPuzQhTyNi4kx95xDV0fMXXziMgV55jG3YoUmMQyPVAHDofyN5JEbOdcncZBKfJg9ySRqI41f7SSf8OxMULZwyqkpkDUOYWJvKwYi6B2X5NMmFujk74t3dXVLLPFsGJ84Nw7pcK67tnyWHWgzwGgdBoceNgGUbs6JA7BQlfpPGU/sLdHll4c/YzVxUnABzj0eUGVflgLmKzeCDbtHfAjS0SSiCBLYenzGZ2MqkP5tympKiYlhDn3sUHuCG+aiaBIezGO9LJyV8ZbPc/y5+J5GCeE5pibF2SjX5u+K2vrqYRyxAA+4CIeP9FsCZMdgw8FlLeMxoF9A1V1w9ks7BVXm0f9rP6uTD1LEjqEsjwsrjju7a3YwOKCdfzviNx8LWZ6X5JDI/u2qxfRi9WWCSmR1wSGmffD",
+        "associated_data": "transaction",
+        "nonce": "dU8dRTstWEXi"
+    }
+}
+
+### 删除订单
+
+DELETE http://localhost:8055/items/orders/9b67b048-781a-47c3-b7c7-03c7c01f0f78
+Authorization: Bearer g1HpwDXXlheFk5YkeNiJg04ZAU3h_IuU

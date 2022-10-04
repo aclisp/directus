@@ -1,0 +1,55 @@
+{
+	"name": "directus-extension-wechat",
+	"description": "Please enter a description for your extension",
+	"icon": "extension",
+	"version": "1.0.0",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-bundle"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "bundle",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"entries": [
+			{
+				"type": "endpoint",
+				"name": "miniprogram-pay",
+				"source": "src/miniprogram-pay/index.ts"
+			},
+			{
+				"type": "endpoint",
+				"name": "offiaccount",
+				"source": "src/offiaccount/index.ts"
+			},
+			{
+				"type": "hook",
+				"name": "offiaccount-hooks",
+				"source": "src/offiaccount-hooks/index.ts"
+			}
+		],
+		"host": "^10.10.0"
+	},
+	"scripts": {
+		"build": "directus-extension build --no-minify --sourcemap",
+		"dev": "directus-extension build -w --no-minify --sourcemap",
+		"link": "directus-extension link",
+		"add": "directus-extension add"
+	},
+	"dependencies": {
+		"@directus/api": "workspace:*",
+		"@peculiar/x509": "1.12.3"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "workspace:*",
+		"@types/node": "22.13.8",
+		"typescript": "5.8.2"
+	}
+}
