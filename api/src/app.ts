@@ -70,6 +70,7 @@ import schema from './middleware/schema.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
+import { addRequestId } from './middleware/add-request-id.js';
 
 const require = createRequire(import.meta.url);
 
@@ -176,6 +177,8 @@ export default async function createApp(): Promise<express.Application> {
 	await emitter.emitInit('app.before', { app });
 
 	await emitter.emitInit('middlewares.before', { app });
+
+	app.use(addRequestId);
 
 	app.use(createExpressLogger());
 
