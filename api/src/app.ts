@@ -58,6 +58,7 @@ import emitter from './emitter.js';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
 import { createExpressLogger, useLogger } from './logger/index.js';
+import { addRequestId } from './middleware/add-request-id.js';
 import authenticate from './middleware/authenticate.js';
 import cache from './middleware/cache.js';
 import cors from './middleware/cors.js';
@@ -187,6 +188,8 @@ export default async function createApp(): Promise<express.Application> {
 	await emitter.emitInit('app.before', { app });
 
 	await emitter.emitInit('middlewares.before', { app });
+
+	app.use(addRequestId);
 
 	app.use(createExpressLogger());
 

@@ -11,5 +11,7 @@ export default function getPackageManager(): string {
 		if ('yarn' in agent && agent['yarn'] !== '?') return 'yarn';
 	}
 
-	return 'npm';
+	// As we are going to create extensions locally in the directus-monorepo,
+	// default to `pnpm` as the package manager.
+	return 'pnpm';
 }

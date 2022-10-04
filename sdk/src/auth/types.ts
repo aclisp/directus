@@ -43,6 +43,7 @@ export interface AuthenticationConfig {
 }
 
 export interface AuthenticationClient<_Schema> {
+	loginWeChatOffiAccount(code: string): Promise<AuthenticationData>;
 	login(payload: LocalLoginPayload, options?: LoginOptions): Promise<AuthenticationData>;
 	login(payload: LDAPLoginPayload, options?: LoginOptions): Promise<AuthenticationData>;
 	refresh(options?: RefreshOptions): Promise<AuthenticationData>;

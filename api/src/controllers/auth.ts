@@ -9,6 +9,8 @@ import {
 	createOAuth2AuthRouter,
 	createOpenIDAuthRouter,
 	createSAMLAuthRouter,
+	createWeChatMiniProgramAuthRouter,
+	createWeChatOffiAccountAuthRouter,
 } from '../auth/drivers/index.js';
 import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../constants.js';
 import { useLogger } from '../logger/index.js';
@@ -52,6 +54,14 @@ for (const authProvider of authProviders) {
 
 		case 'saml':
 			authRouter = createSAMLAuthRouter(authProvider.name);
+			break;
+
+		case 'wechatminiprogram':
+			authRouter = createWeChatMiniProgramAuthRouter(authProvider.name);
+			break;
+
+		case 'wechatoffiaccount':
+			authRouter = createWeChatOffiAccountAuthRouter(authProvider.name);
 			break;
 	}
 

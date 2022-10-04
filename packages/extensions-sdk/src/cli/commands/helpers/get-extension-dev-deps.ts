@@ -3,7 +3,6 @@ import type { ExtensionType } from '@directus/types';
 import { isIn } from '@directus/utils';
 import type { Language } from '../../types.js';
 import getPackageVersion from '../../utils/get-package-version.js';
-import getSdkVersion from '../../utils/get-sdk-version.js';
 
 export default async function getExtensionDevDeps(
 	type: ExtensionType | ExtensionType[],
@@ -13,7 +12,7 @@ export default async function getExtensionDevDeps(
 	const languages = Array.isArray(language) ? language : [language];
 
 	const deps: Record<string, string> = {
-		'@directus/extensions-sdk': getSdkVersion(),
+		'@directus/extensions-sdk': 'workspace:*',
 	};
 
 	if (languages.includes('typescript')) {

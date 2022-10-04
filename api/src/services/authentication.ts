@@ -115,7 +115,13 @@ export class AuthenticationService {
 			);
 		};
 
-		if (user?.status !== 'active' || user?.provider !== providerName) {
+		if (user?.status !== 'active') {
+			emitStatus('fail');
+			await stall(STALL_TIME, timeStart);
+			throw new InvalidCredentialsError();
+		} else if (user.provider.startsWith('wechat') && providerName.startsWith('wechat')) {
+			// We treat wechat providers identical because of the unionid mechanism.
+		} else if (user.provider !== providerName) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
 			throw new InvalidCredentialsError();

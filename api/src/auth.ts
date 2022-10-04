@@ -8,6 +8,8 @@ import {
 	OAuth2AuthDriver,
 	OpenIDAuthDriver,
 	SAMLAuthDriver,
+	WeChatMiniProgramAuthDriver,
+	WeChatOffiAccountAuthDriver,
 } from './auth/drivers/index.js';
 import { DEFAULT_AUTH_PROVIDER } from './constants.js';
 import getDatabase from './database/index.js';
@@ -92,6 +94,12 @@ function getProviderInstance(
 
 		case 'saml':
 			return new SAMLAuthDriver(options, config);
+
+		case 'wechatminiprogram':
+			return new WeChatMiniProgramAuthDriver(options, config);
+
+		case 'wechatoffiaccount':
+			return new WeChatOffiAccountAuthDriver(options, config);
 	}
 
 	return undefined;
