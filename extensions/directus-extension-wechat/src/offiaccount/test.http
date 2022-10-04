@@ -1,0 +1,8 @@
+### JS-SDK使用权限签名算法
+
+POST http://localhost:8055/wechat-offiaccount/signature
+Content-Type: application/json
+
+{
+    "url": "https://h5.dancingcat.top/"
+}

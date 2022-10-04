@@ -208,6 +208,14 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 					expires_at: null,
 				});
 			},
+			async loginWeChatOffiAccount(code: string) {
+				resetStorage();
+				const requestUrl = getRequestUrl(client.url, `auth/login/wechatoffiaccount?code=${code}`);
+				const fetchOptions: RequestInit = { method: 'GET' };
+				const data = await request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch);
+				setCredentials(data);
+				return data;
+			},
 		};
 	};
 };

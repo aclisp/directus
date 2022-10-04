@@ -1,0 +1,83 @@
+# NOTE: Testing Only. DO NOT use this in production
+# ~~ Modified by huanghao for production usage ~~
+
+ARG NODE_VERSION=22-alpine
+
+# https://stackoverflow.com/a/69636473/22274952
+# build AMD64 based images on the ARM64 architecture
+FROM --platform=linux/amd64 node:${NODE_VERSION}
+
+# ~~ Upgrade the container system software ~~
+RUN \
+    # Change apk repositories
+    sed -i "s#dl-cdn.alpinelinux.org#mirrors.tuna.tsinghua.edu.cn#g" /etc/apk/repositories \
+    # Upgrade system and install 'ssmtp' to be able to send mails
+    && apk add --no-cache \
+    ssmtp \
+    # Add support for specifying the timezone of the container
+    # using the "TZ" environment variable.
+    tzdata \
+    # Add build tools for node packages
+    python3 make g++ \
+    # Remove apk cache
+    && rm -rf /var/cache/apk/* \
+    # Change npm registry to a fast mirror
+    #&& npm config set registry https://registry.npmmirror.com/ \
+    # Resolve sharp
+    #&& npm config set sharp_binary_host "https://npmmirror.com/mirrors/sharp" \
+    #&& npm config set sharp_libvips_binary_host "https://npmmirror.com/mirrors/sharp-libvips" \
+    # Resolve sqlite
+    #&& npm config set node_sqlite3_binary_host_mirror "https://npmmirror.com/mirrors/sqlite3" \
+    # Resolve argon2
+    #&& npm config set argon2_binary_host_mirror "https://npmmirror.com/mirrors/argon2" \
+    # Install pnpm
+    && npm install -g pnpm@9.15.6
+
+WORKDIR /directus
+
+# pnpm fetch does require only lockfile
+# (see https://pnpm.io/cli/fetch)
+COPY pnpm-lock.yaml .
+RUN pnpm fetch --prod
+
+COPY . .
+RUN \
+    # Install the dependencies
+    pnpm install --recursive --offline --prod --frozen-lockfile \
+    # Create data directories
+    && mkdir -p database extensions uploads \
+    && chown node:node database extensions uploads
+
+# ~~ Setup the environment variables ~~
+ENV NODE_ENV="production" \
+    # Eliminate npm "update available" message
+    NPM_CONFIG_UPDATE_NOTIFIER="false" \
+    # Use a local timezone
+    TZ="Asia/Shanghai" \
+    # Default environment variables
+    # (see https://docs.directus.io/self-hosted/config-options.html)
+    DB_CLIENT="sqlite3" \
+    DB_FILENAME="/directus/database/database.sqlite" \
+    EXTENSIONS_PATH="/directus/extensions" \
+    STORAGE_LOCAL_ROOT="/directus/uploads"
+
+# Expose data directories as volumes
+VOLUME \
+    /directus/database \
+    /directus/extensions \
+    /directus/uploads
+
+# Switch to user 'node'
+USER node
+
+# Change to the runtime directory
+WORKDIR /directus/api
+
+# Expose the server port
+EXPOSE 8055
+
+# Use the shell form of the CMD
+CMD : \
+    && node dist/cli/run.js bootstrap \
+    && node dist/cli/run.js start \
+    ;
