@@ -1,0 +1,37 @@
+{% layout 'base' %} {% block content %}
+
+<h1>验证您的电子邮件地址</h1>
+
+<p style='padding-bottom: 30px'>
+  感谢您注册<i>{{ projectName }}</i>。
+  要完成注册，请打开以下验证链接来验证您的电子邮件地址。
+  如果您未亲自发起注册，请忽略此电子邮件。
+</p>
+
+<a
+  class='button'
+  rel='noopener'
+  target='_blank'
+  href='{{url}}'
+  style='
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    text-decoration: none;
+    display: inline-block;
+    padding: 11px 24px;
+    border-radius: 8px;
+    background: #171717;
+    border: 1px solid #ffffff;
+  '
+>
+  <!--[if mso]>
+    <i style="letter-spacing: 25px; mso-font-width: -100%; mso-text-raise: 30pt"
+      >&nbsp;</i
+    >
+  <![endif]-->
+  <span style='mso-text-raise: 15pt'>验证电子邮件</span>
+  <!--[if mso]> <i style="letter-spacing: 25px; mso-font-width: -100%">&nbsp;</i> <![endif]-->
+</a>
+
+{% endblock %}

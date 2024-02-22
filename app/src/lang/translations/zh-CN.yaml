@@ -1327,7 +1327,7 @@ fields:
     password: 密码
     avatar: 头像
     location: 地理位置
-    title: 标题
+    title: 头衔
     description: 描述
     tags: 标签
     user_preferences: 用户设置
