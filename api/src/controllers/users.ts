@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import {
 	ErrorCode,
 	ForbiddenError,
@@ -20,8 +21,10 @@ import { TFAService } from '../services/tfa.js';
 import { UsersService } from '../services/users.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { Url } from '../utils/url.js';
 
 const router = express.Router();
+const env = useEnv();
 
 router.use(useCollection('directus_users'));
 
@@ -476,13 +479,13 @@ router.get(
 		const { error, value } = verifyRegistrationSchema.validate(req.query['token']);
 
 		if (error) {
-			return res.redirect('/admin/login');
+			return res.redirect(new Url(env['PUBLIC_URL'] as string).addPath('admin', 'login').toString());
 		}
 
 		const service = new UsersService({ accountability: null, schema: req.schema });
 		const id = await service.verifyRegistration(value);
 
-		return res.redirect(`/admin/users/${id}`);
+		return res.redirect(new Url(env['PUBLIC_URL'] as string).addPath('admin', 'users', id).toString());
 	}),
 	respond,
 );
