@@ -3,6 +3,7 @@ import { toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import useNavigation from '../composables/use-navigation';
 import NavigationRole from './navigation-role.vue';
+import { useUserStore } from '@/stores/user';
 
 const props = defineProps<{
 	currentRole?: string;
@@ -17,16 +18,18 @@ const { roles, roleTree, openRoles, loading } = useNavigation(currentRole);
 function handleClick({ role }: { role: string }) {
 	router.push(`/users/roles/${role}`);
 }
+
+const userStore = useUserStore();
 </script>
 
 <template>
 	<v-list nav>
-		<v-list-item to="/users" exact :active="!currentRole">
+		<v-list-item v-if="userStore.isAdmin" to="/users" exact :active="!currentRole">
 			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
 			<v-list-item-content>{{ $t('all_users') }}</v-list-item-content>
 		</v-list-item>
 
-		<v-divider v-if="(roles && roles.length > 0) || loading" />
+		<v-divider v-if="(userStore.isAdmin && roles && roles.length > 0) || loading" />
 
 		<template v-if="loading">
 			<v-list-item v-for="n in 4" :key="n">
