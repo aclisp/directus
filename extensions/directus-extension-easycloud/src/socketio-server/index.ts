@@ -1,4 +1,5 @@
 import { defineHook } from '@directus/extensions-sdk';
+import { Settings } from '@directus/types';
 import * as http from 'node:http';
 import { Server, Socket } from 'socket.io';
 
@@ -32,7 +33,7 @@ export default defineHook(({ init, filter, action }, context) => {
 			}
 
 			logger.trace(
-				`socket.io Server: socket ${socket.id} about to authenticate with token: ${socket.handshake.auth.token}`
+				`socket.io Server: socket ${socket.id} about to authenticate with token: ${socket.handshake.auth.token}`,
 			);
 
 			socket.request.headers.authorization = `Bearer ${socket.handshake.auth.token}`;
@@ -78,6 +79,22 @@ export default defineHook(({ init, filter, action }, context) => {
 
 	filter('request.not_found', (_, { request }) => {
 		return request.path == '/socket.io/';
+	});
+
+	// https://blogs.taiga.nl/martijn/2022/04/29/use-a-hook-to-hide-modules-for-non-admin-roles-in-directus/
+	filter<Settings[]>('settings.read', (items, _, context) => {
+		if (context.accountability && context.accountability.admin) {
+			return items;
+		}
+
+		const settings = items[0];
+		const hideModules = ['users'];
+
+		if (settings && settings.module_bar) {
+			settings.module_bar = settings.module_bar.filter((module) => !hideModules.includes(module.id));
+		}
+
+		return items;
 	});
 });
 
