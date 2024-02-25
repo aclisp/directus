@@ -11,6 +11,7 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import { useUserStore } from '@/stores/user';
 
 const props = defineProps<{
 	currentRole?: string;
@@ -25,16 +26,18 @@ const { roles, roleTree, openRoles, loading } = useNavigation(currentRole);
 function handleClick({ role }: { role: string }) {
 	router.push(`/users/roles/${role}`);
 }
+
+const userStore = useUserStore();
 </script>
 
 <template>
 	<VList nav>
-		<VListItem to="/users" exact :active="!currentRole">
+		<VListItem v-if="userStore.isAdmin" to="/users" exact :active="!currentRole">
 			<VListItemIcon><VIcon name="folder_shared" /></VListItemIcon>
 			<VListItemContent>{{ $t('all_users') }}</VListItemContent>
 		</VListItem>
 
-		<VDivider v-if="(roles && roles.length > 0) || loading" />
+		<VDivider v-if="(userStore.isAdmin && roles && roles.length > 0) || loading" />
 
 		<template v-if="loading">
 			<VListItem v-for="n in 4" :key="n">
