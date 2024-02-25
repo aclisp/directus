@@ -11,6 +11,7 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import { useUserStore } from '@/stores/user';
 
 const props = defineProps<{
 	currentRole?: string;
@@ -25,28 +26,30 @@ const { roles, roleTree, openRoles, loading } = useNavigation(currentRole);
 function handleClick({ role }: { role: string }) {
 	router.push({ name: 'roles-collection', params: { role } });
 }
+
+const userStore = useUserStore();
 </script>
 
 <template>
 	<VList nav>
-		<VListItem :to="{ name: 'users-active' }" exact>
+		<VListItem v-if="userStore.isAdmin" :to="{ name: 'users-active' }" exact>
 			<VListItemIcon><VIcon name="group" /></VListItemIcon>
 			<VListItemContent>{{ $t('active_users') }}</VListItemContent>
 		</VListItem>
-		<VListItem :to="{ name: 'users-suspended' }" exact>
+		<VListItem v-if="userStore.isAdmin" :to="{ name: 'users-suspended' }" exact>
 			<VListItemIcon><VIcon name="group_off" /></VListItemIcon>
 			<VListItemContent>{{ $t('suspended_users') }}</VListItemContent>
 		</VListItem>
-		<VListItem :to="{ name: 'users-invited' }" exact>
+		<VListItem v-if="userStore.isAdmin" :to="{ name: 'users-invited' }" exact>
 			<VListItemIcon><VIcon name="person_add" /></VListItemIcon>
 			<VListItemContent>{{ $t('invited_users') }}</VListItemContent>
 		</VListItem>
-		<VListItem :to="{ name: 'users-all' }" exact>
+		<VListItem v-if="userStore.isAdmin" :to="{ name: 'users-all' }" exact>
 			<VListItemIcon><VIcon name="folder_shared" /></VListItemIcon>
 			<VListItemContent>{{ $t('all_users') }}</VListItemContent>
 		</VListItem>
 
-		<VDivider v-if="(roles && roles.length > 0) || loading" />
+		<VDivider v-if="(userStore.isAdmin && roles && roles.length > 0) || loading" />
 
 		<template v-if="loading">
 			<VListItem v-for="n in 4" :key="n">
