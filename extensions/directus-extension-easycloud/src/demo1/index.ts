@@ -56,5 +56,20 @@ export default defineEndpoint({
 				next(error);
 			}
 		});
+
+		// 用于调试支付通知
+		router.post('/pay-notify-success', (req, res, next) => {
+			try {
+				const signature = req.get('Wechatpay-Signature');
+				const serial = req.get('Wechatpay-Serial');
+				const timestamp = req.get('Wechatpay-Timestamp');
+				const nonce = req.get('Wechatpay-Nonce');
+				const body = req.body;
+				logger.info({ signature, serial, timestamp, nonce, body }, 'Got pay-notify');
+				res.status(204).end(); // 接收成功！会真的扣钱！
+			} catch (error) {
+				next(error);
+			}
+		});
 	},
 });
