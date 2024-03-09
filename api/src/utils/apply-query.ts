@@ -24,7 +24,7 @@ import type { AliasMap } from './get-column-path.js';
 import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
 import { getRelationInfo } from './get-relation-info.js';
-import { isValidUuid } from './is-valid-uuid.js';
+import { isValidUuid, isValidUuidCompact, restoreUuidCompact } from './is-valid-uuid.js';
 import { parseFilterKey } from './parse-filter-key.js';
 import { parseNumericString } from './parse-numeric-string.js';
 
@@ -947,6 +947,9 @@ export function applySearch(
 				}
 			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {
 				this.orWhere({ [`${collection}.${name}`]: searchQuery });
+				needsFallbackCondition = false;
+			} else if (field.type === 'uuid' && isValidUuidCompact(searchQuery)) {
+				this.orWhere({ [`${collection}.${name}`]: restoreUuidCompact(searchQuery) });
 				needsFallbackCondition = false;
 			}
 		});
