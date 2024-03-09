@@ -1,4 +1,5 @@
 type UUID = `${string}-${string}-${string}-${string}-${string}`;
+type UUIDCompact = string;
 
 /**
  * Based on the patterns found in the 'uuid' and 'uuid-validate' npm packages, both of which are MIT licensed.
@@ -21,4 +22,14 @@ const regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export function isValidUuid(value: string): value is UUID {
 	return regex.test(value);
+}
+
+const regexCompact = /^[0-9a-f]{8}[0-9a-f]{4}[0-9a-f]{4}[0-9a-f]{4}[0-9a-f]{12}$/i;
+
+export function isValidUuidCompact(value: string): value is UUIDCompact {
+	return regexCompact.test(value);
+}
+
+export function restoreUuidCompact(v: UUIDCompact): UUID {
+	return [v.slice(0, 8), v.slice(8, 12), v.slice(12, 16), v.slice(16, 20), v.slice(20, 32)].join('-') as UUID;
 }
