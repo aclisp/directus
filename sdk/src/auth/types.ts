@@ -29,6 +29,7 @@ export interface AuthenticationConfig {
 }
 
 export interface AuthenticationClient<_Schema> {
+	loginWeChatOffiAccount(code: string): Promise<AuthenticationData>;
 	login(email: string, password: string, options?: LoginOptions): Promise<AuthenticationData>;
 	refresh(): Promise<AuthenticationData>;
 	logout(): Promise<void>;
