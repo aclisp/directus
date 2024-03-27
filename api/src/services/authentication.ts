@@ -297,7 +297,7 @@ export class AuthenticationService {
 			await loginAttemptsLimiter.set(user.id, 0, 0);
 		}
 
-		await stall(STALL_TIME, timeStart);
+		//await stall(STALL_TIME, timeStart);
 
 		return {
 			accessToken,
