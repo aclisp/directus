@@ -1,24 +1,31 @@
-import type { Accountability } from '@directus/types';
-import { InvalidProviderConfigError, InvalidCredentialsError, InvalidPayloadError } from '@directus/errors';
-import { useLogger } from '../../logger/index.js';
-import type { AuthDriverOptions, User } from '../../types/index.js';
 import { AuthDriver } from '../auth.js';
-import { AuthenticationService } from '../../services/authentication.js';
+import { customAlphabet } from 'nanoid';
 import { UsersService } from '../../services/users.js';
+import { InvalidProviderConfigError, InvalidCredentialsError, InvalidPayloadError } from '@directus/errors';
+import type { AuthDriverOptions, User } from '../../types/index.js';
+import { useLogger } from '../../logger/index.js';
 import { Router } from 'express';
 import asyncHandler from '../../utils/async-handler.js';
-import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { respond } from '../../middleware/respond.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
-import { customAlphabet } from 'nanoid';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { AuthenticationService } from '../../services/authentication.js';
+import type { Accountability } from '@directus/types';
+import type { AxiosStatic } from 'axios';
 
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 10);
 
+// scope为snsapi_userinfo时网页授权返回的用户信息
+type UserInfo = {
+	nickname: string;
+	headimgurl: string;
+};
+
 /**
- * 一个最简单的微信小程序登录机制的实现
- * https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/login.html
+ * 一个最简单的微信公众号登录机制的实现
+ * https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html
  */
-export class WeChatMiniProgramAuthDriver extends AuthDriver {
+export class WeChatOffiAccountAuthDriver extends AuthDriver {
 	usersService: UsersService;
 	config: Record<string, any>;
 	clientId: string;
@@ -36,37 +43,38 @@ export class WeChatMiniProgramAuthDriver extends AuthDriver {
 
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 		this.config = additionalConfig;
-		this.clientId = clientId; // 小程序 appId
-		this.clientSecret = clientSecret; // 小程序 appSecret
-		this.moduleName = 'WeChatMiniProgramAuthDriver';
+		this.clientId = clientId; // 公众号 appId
+		this.clientSecret = clientSecret; // 公众号 appSecret
+		this.moduleName = 'WeChatOffiAccountAuthDriver';
 	}
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
 		const logger = useLogger();
 		const axios = (await import('axios')).default;
 
-		// 回传到开发者服务器的临时登录凭证code
+		// code作为换取access_token的票据，每次用户授权带上的code将不一样，code只能使用一次，5分钟未被使用自动过期。
 		if (!payload['code']) {
 			logger.trace(`[${this.moduleName}] No code in payload`);
 			throw new InvalidCredentialsError();
 		}
 
-		// 调用 auth.code2Session 接口，换取 用户唯一标识 OpenID 、 用户在微信开放平台帐号下的唯一标识UnionID（若当前小程序已绑定到微信开放平台帐号） 和 会话密钥 session_key
+		// 通过code换取网页授权access_token，同时获取到 openid
 		const request = {
 			baseURL: 'https://api.weixin.qq.com',
-			url: '/sns/jscode2session',
+			url: '/sns/oauth2/access_token',
 			method: 'GET',
 			params: {
 				appid: this.clientId,
 				secret: this.clientSecret,
-				js_code: payload['code'],
+				code: payload['code'],
 				grant_type: 'authorization_code',
 			},
 		};
 
 		const response = await axios.request(request);
 		logger.trace(`[${this.moduleName}] Request ${request.url} response.data : ${JSON.stringify(response.data)}`);
-		const { openid, session_key, unionid, errcode = 0, errmsg = '' } = response.data;
+		const { access_token, openid, scope, unionid, errcode = 0, errmsg = '' } = response.data;
+		let userInfo: UserInfo | undefined;
 
 		if (errcode != 0) {
 			const message = `Request ${request.url} : [${errcode}] ${errmsg}`;
@@ -74,23 +82,34 @@ export class WeChatMiniProgramAuthDriver extends AuthDriver {
 			throw new InvalidPayloadError({ reason: message });
 		}
 
-		if (!openid || !session_key) {
-			// openid 和 session_key 必须存在
-			logger.warn(`[${this.moduleName}] Failed to find openid or session_key`);
+		if (!openid || !access_token) {
+			// openid 和 access_token 必须存在
+			logger.warn(`[${this.moduleName}] Failed to find openid or access_token`);
 			throw new InvalidCredentialsError();
+		}
+
+		if (scope === 'snsapi_userinfo') {
+			// 弹出授权页面，则必须有 unionid
+			if (!unionid) {
+				logger.warn(`[${this.moduleName}] Failed to find unionid for scope ${scope}`);
+				throw new InvalidCredentialsError();
+			}
+
+			// 拉取用户信息(需scope为snsapi_userinfo)
+			userInfo = await this.fetchUserInfo(axios, openid, access_token);
 		}
 
 		// 找回数据库里的userId
 		const user = await this.fetchUser(openid, unionid);
 
 		if (user) {
-			// 更新session_key
-			await this.usersService.updateOne(user.id, {
-				auth_data: JSON.stringify({
-					...JSON.parse(user.auth_data as string),
-					wechatminiprogram: { openid, session_key },
-				}),
-			});
+			// 更新用户信息
+			if (userInfo) {
+				await this.usersService.updateOne(user.id, {
+					avatar_url: userInfo.headimgurl,
+					first_name: userInfo.nickname,
+				});
+			}
 
 			return user.id;
 		}
@@ -100,8 +119,9 @@ export class WeChatMiniProgramAuthDriver extends AuthDriver {
 			provider: this.config['provider'],
 			external_identifier: unionid, // 用户统一标识
 			role: this.config['defaultRoleId'],
-			auth_data: JSON.stringify({ wechatminiprogram: { openid, session_key } }), // 用户唯一标识和会话密钥
-			first_name: 'MiniProgram',
+			auth_data: JSON.stringify({ wechatoffiaccount: { openid } }), // 用户唯一标识
+			avatar_url: userInfo ? userInfo.headimgurl : null,
+			first_name: userInfo ? userInfo.nickname : 'OffiAccount',
 			last_name: 'User',
 			email: nanoid() + '@user.cn',
 			email_notifications: false,
@@ -139,7 +159,7 @@ export class WeChatMiniProgramAuthDriver extends AuthDriver {
 			if (user) {
 				const auth_data = JSON.parse(user.auth_data as string);
 
-				if (openid !== auth_data.wechatminiprogram.openid) {
+				if (openid !== auth_data.wechatoffiaccount.openid) {
 					throw new Error('unionid/openid mismatch');
 				}
 			}
@@ -147,18 +167,45 @@ export class WeChatMiniProgramAuthDriver extends AuthDriver {
 			return user;
 		}
 
-		// openid is stored as directus_users auth_data.wechatminiprogram.openid
+		// openid is stored as directus_users auth_data.wechatoffiaccount.openid
 		const user = await this.knex
 			.select<User>('id', 'auth_data')
 			.from<User>('directus_users')
-			.whereJsonPath('auth_data', '$.wechatminiprogram.openid', '=', openid)
+			.whereJsonPath('auth_data', '$.wechatoffiaccount.openid', '=', openid)
 			.first();
 
 		return user;
 	}
+
+	private async fetchUserInfo(axios: AxiosStatic, openid: string, access_token: string): Promise<UserInfo> {
+		const logger = useLogger();
+
+		const request = {
+			baseURL: 'https://api.weixin.qq.com',
+			url: '/sns/userinfo',
+			method: 'GET',
+			params: {
+				access_token,
+				openid,
+				lang: 'zh_CN',
+			},
+		};
+
+		const response = await axios.request(request);
+		logger.trace(`[${this.moduleName}] Request ${request.url} response.data : ${JSON.stringify(response.data)}`);
+		const { nickname, headimgurl, errcode = 0, errmsg = '' } = response.data;
+
+		if (errcode != 0) {
+			const message = `Request ${request.url} : [${errcode}] ${errmsg}`;
+			logger.trace(`[${this.moduleName}] ${message}`);
+			throw new InvalidPayloadError({ reason: message });
+		}
+
+		return { nickname, headimgurl };
+	}
 }
 
-export function createWeChatMiniProgramAuthRouter(providerName: string): Router {
+export function createWeChatOffiAccountAuthRouter(providerName: string): Router {
 	const router = Router();
 
 	router.get(
