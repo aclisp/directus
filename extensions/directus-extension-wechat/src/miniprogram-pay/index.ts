@@ -98,7 +98,6 @@ export default defineEndpoint({
 		const { ItemsService, UsersService } = services;
 		const NOTIFY_ENDPOINTS = ['/create-order-notify'];
 		const host: string = String(env['PAY_WECHATMINIPROGRAM_HOST']); // 微信支付的请求域名
-		const appid: string = String(env['AUTH_WECHATMINIPROGRAM_CLIENT_ID']); // 小程序的appid
 		const mchid: string = String(env['PAY_WECHATMINIPROGRAM_MERCHANT_ID']); // 商户号
 		const serial_no: string = String(env['PAY_WECHATMINIPROGRAM_SERIAL_NO']); // 商户证书序列号
 		const private_key = readEnvFile('PAY_WECHATMINIPROGRAM_PRIVATE_KEY_FILE', env, logger); // 商户私钥
@@ -121,7 +120,7 @@ export default defineEndpoint({
 		});
 
 		router.post(
-			'/create-order',
+			'/create-order/:provider(wechatoffiaccount|wechatminiprogram)',
 			asyncHandler(async (req: any, res: any) => {
 				const serviceOptions = {
 					schema: req.schema,
@@ -136,6 +135,7 @@ export default defineEndpoint({
 					const method = 'POST';
 					const url = '/v3/pay/transactions/jsapi';
 					const timestamp = new Date();
+					const appid = getAppId(env, req);
 
 					// 请求报文主体
 					const body = JSON.stringify({
@@ -275,9 +275,14 @@ function genTimeExpire(timestamp: Date, timeoutSeconds: number): string {
 	return copy.toISOString();
 }
 
+function getAppId(env: Record<string, any>, req: any): string {
+	return String(env[`AUTH_${req.params.provider.toUpperCase()}_CLIENT_ID`]);
+}
+
 async function getOpenId(userService: any, req: any): Promise<string> {
-	const user = await userService.readOne(req.accountability.user, { fields: ['external_identifier'] });
-	return user.external_identifier;
+	const user = await userService.readOne(req.accountability.user, { fields: ['auth_data'] });
+	const auth_data = JSON.parse(user.auth_data as string);
+	return auth_data[req.params.provider].openid;
 }
 
 function errorResponse(res: any, statusCode: number, error: EndpointError) {

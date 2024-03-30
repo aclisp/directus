@@ -168,6 +168,10 @@ export class WeChatOffiAccountAuthDriver extends AuthDriver {
 		}
 
 		// openid is stored as directus_users auth_data.wechatoffiaccount.openid
+		// this search needs an index as:
+		// CREATE UNIQUE INDEX `directus_users_wechatoffiaccount_openid` ON `directus_users` (
+        //     json_extract(`auth_data`, '$.wechatoffiaccount.openid')
+	    // );
 		const user = await this.knex
 			.select<User>('id', 'auth_data')
 			.from<User>('directus_users')
