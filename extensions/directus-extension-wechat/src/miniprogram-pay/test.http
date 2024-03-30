@@ -1,7 +1,7 @@
 ### 测试下单
 
-POST http://localhost:8055/wechat-miniprogram-pay/create-order
-Authorization: Bearer 3W-5juFzRoSKpg0PYWrMXHkl6oy6RxWu
+POST http://localhost:8055/wechat-miniprogram-pay/create-order/wechatoffiaccount
+Authorization: Bearer U7-8LBk5HR74bLaQ_OrSPYR_6cGApmj-
 Content-Type: application/json
 
 {
@@ -35,3 +35,8 @@ Content-Type: application/json
         "nonce": "dU8dRTstWEXi"
     }
 }
+
+### 删除订单
+
+DELETE http://localhost:8055/items/orders/9b67b048-781a-47c3-b7c7-03c7c01f0f78
+Authorization: Bearer g1HpwDXXlheFk5YkeNiJg04ZAU3h_IuU
