@@ -1,6 +1,7 @@
 import { defineEndpoint } from '@directus/extensions-sdk';
 import asyncHandler from '@directus/api/utils/async-handler';
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
+import { uuidToChar32 } from '../utils/uuid.js';
 
 export default defineEndpoint({
 	id: 'wechat-offiaccount',
@@ -27,6 +28,39 @@ export default defineEndpoint({
 				} else {
 					res.status(400).send('signature error');
 				}
+			}),
+		);
+
+		// JS-SDK使用权限签名算法
+		router.post(
+			'/signature',
+			asyncHandler(async (req, res) => {
+				const { url } = req.body;
+				const noncestr = uuidToChar32(randomUUID());
+				const timestamp = Math.floor(Date.now() / 1000);
+
+				const { token: jsapi_ticket } = await database
+					.select('token')
+					.from('wechat_credentials')
+					.where('id', 'wechatoffiaccount-jsapi-ticket')
+					.first();
+
+				const data = { jsapi_ticket, noncestr, timestamp, url };
+
+				const strdata = Object.entries(data)
+					.map(([key, value]) => `${key}=${value}`)
+					.join('&');
+
+				const shasum = createHash('sha1');
+				shasum.update(strdata);
+				const signature = shasum.digest('hex');
+
+				res.send({
+					appId: env['AUTH_WECHATOFFIACCOUNT_CLIENT_ID'],
+					timestamp,
+					nonceStr: noncestr,
+					signature,
+				});
 			}),
 		);
 	},

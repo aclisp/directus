@@ -28,6 +28,11 @@
 				"type": "endpoint",
 				"name": "offiaccount",
 				"source": "src/offiaccount/index.ts"
+			},
+			{
+				"type": "hook",
+				"name": "offiaccount-hooks",
+				"source": "src/offiaccount-hooks/index.ts"
 			}
 		],
 		"host": "^10.10.0"
