@@ -147,36 +147,48 @@ export class WeChatOffiAccountAuthDriver extends AuthDriver {
 	}
 
 	private async fetchUser(openid: string, unionid?: string): Promise<User | undefined> {
-		if (unionid) {
-			// unionid is always the directus_users external_identifier
-			const user = await this.knex
-				.select<User>('id', 'auth_data')
-				.from('directus_users')
-				.where('external_identifier', unionid)
-				.first();
-
-			// check the openid is match
-			if (user) {
-				const auth_data = JSON.parse(user.auth_data as string);
-
-				if (openid !== auth_data.wechatoffiaccount.openid) {
-					throw new Error('unionid/openid mismatch');
-				}
-			}
-
-			return user;
-		}
+		const logger = useLogger();
 
 		// openid is stored as directus_users auth_data.wechatoffiaccount.openid
 		// this search needs an index as:
 		// CREATE UNIQUE INDEX `directus_users_wechatoffiaccount_openid` ON `directus_users` (
-        //     json_extract(`auth_data`, '$.wechatoffiaccount.openid')
-	    // );
+		//     json_extract(`auth_data`, '$.wechatoffiaccount.openid')
+		// );
 		const user = await this.knex
-			.select<User>('id', 'auth_data')
+			.select<User>('id', 'auth_data', 'external_identifier')
 			.from<User>('directus_users')
 			.whereJsonPath('auth_data', '$.wechatoffiaccount.openid', '=', openid)
 			.first();
+
+		if (user && unionid && user.external_identifier !== unionid) {
+			// unionid is always the directus_users external_identifier
+			const unionUser = await this.knex
+				.select<User>('id', 'auth_data', 'provider')
+				.from('directus_users')
+				.where('external_identifier', unionid)
+				.first();
+
+			if (unionUser && unionUser.id !== user.id) {
+				logger.warn(
+					`[${this.moduleName}] User ${unionUser.id} of provider ${unionUser.provider} has an unionid ${unionid} as the external identifier, but now it is removed.`,
+				);
+
+				await this.usersService.updateOne(unionUser.id, { external_identifier: null });
+				// see https://github.com/directus/directus/pull/16501
+				await this.usersService.updateOne(unionUser.id, { auth_data: unionUser.auth_data });
+			}
+
+			// update user's external_identifier to unionid
+			await this.usersService.updateOne(user.id, { external_identifier: unionid });
+
+			// see https://github.com/directus/directus/pull/16501
+			await this.usersService.updateOne(user.id, {
+				auth_data: JSON.stringify({
+					...JSON.parse(user.auth_data as string),
+					wechatoffiaccount: { openid },
+				}),
+			});
+		}
 
 		return user;
 	}
