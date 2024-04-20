@@ -139,7 +139,7 @@ export class WeChatMiniProgramAuthDriver extends AuthDriver {
 			if (user) {
 				const auth_data = JSON.parse(user.auth_data as string);
 
-				if (openid !== auth_data.wechatminiprogram.openid) {
+				if (auth_data.wechatminiprogram && openid !== auth_data.wechatminiprogram.openid) {
 					throw new Error('unionid/openid mismatch');
 				}
 			}
@@ -150,8 +150,8 @@ export class WeChatMiniProgramAuthDriver extends AuthDriver {
 		// openid is stored as directus_users auth_data.wechatminiprogram.openid
 		// this search needs an index as:
 		// CREATE UNIQUE INDEX `directus_users_wechatminiprogram_openid` ON `directus_users` (
-        //     json_extract(`auth_data`, '$.wechatminiprogram.openid')
-	    // );
+		//     json_extract(`auth_data`, '$.wechatminiprogram.openid')
+		// );
 		const user = await this.knex
 			.select<User>('id', 'auth_data')
 			.from<User>('directus_users')
