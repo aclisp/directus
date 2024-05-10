@@ -1,7 +1,7 @@
 # NOTE: Testing Only. DO NOT use this in production
 # ~~ Modified by huanghao for production usage ~~
 
-ARG NODE_VERSION=18-alpine
+ARG NODE_VERSION=22-alpine
 
 # https://stackoverflow.com/a/69636473/22274952
 # build AMD64 based images on the ARM64 architecture
@@ -31,7 +31,7 @@ RUN \
     # Resolve argon2
     #&& npm config set argon2_binary_host_mirror "https://npmmirror.com/mirrors/argon2" \
     # Install pnpm
-    && npm install -g pnpm@8.15.4
+    && npm install -g pnpm@9.12.1
 
 WORKDIR /directus
 

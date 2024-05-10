@@ -8,3 +8,4 @@
 #**/dist  # We need the local build distributions
 **/.env
 **/.cache
+**/prisma
