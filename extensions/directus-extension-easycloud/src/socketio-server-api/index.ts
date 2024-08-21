@@ -48,7 +48,7 @@ export default defineEndpoint({
 					rooms: Array.from(rooms),
 					users: Array.from(users),
 				});
-			})
+			}),
 		);
 
 		router.post('/emit', (req: any, res) => {

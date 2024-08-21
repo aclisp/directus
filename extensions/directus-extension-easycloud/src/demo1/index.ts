@@ -5,6 +5,8 @@ export default defineEndpoint({
 	handler: async (router, context) => {
 		const { database, logger } = context;
 
+		/* We do not create this table anymore.
+
 		if (!(await database.schema.hasTable('ext_demo1'))) {
 			await database.schema.createTable('ext_demo1', (table) => {
 				table.increments('id');
@@ -16,6 +18,7 @@ export default defineEndpoint({
 
 			logger.debug('Table (ext_demo1) created!!');
 		}
+		*/
 
 		router.get('/', async (_req, res, next) => {
 			try {

@@ -1,6 +1,6 @@
 import { defineEndpoint } from '@directus/extensions-sdk';
 import { randomUUID, createSign, createVerify, createDecipheriv } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import * as x509 from '@peculiar/x509';
 import { uuidToChar32, char32ToUUID } from '../utils/uuid.js';
 
@@ -436,6 +436,10 @@ async function fetchAndVerify(options: FetchAndVerifyOptions) {
 }
 
 function readEnvFile(key: string, env: Record<string, any>, logger: any) {
+	if (!existsSync(env[key])) {
+		return 'undefined';
+	}
+
 	try {
 		return readFileSync(env[key], { encoding: 'utf8' });
 	} catch (error: any) {
