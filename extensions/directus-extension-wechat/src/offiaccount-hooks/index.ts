@@ -4,8 +4,8 @@ import { defineHook } from '@directus/extensions-sdk';
 export default defineHook(({ schedule }, context) => {
 	const { env, logger, services, getSchema } = context;
 	const { ItemsService } = services;
-	const appid = env['AUTH_WECHATOFFIACCOUNT_CLIENT_ID']
-	const secret = env['AUTH_WECHATOFFIACCOUNT_CLIENT_SECRET']
+	const appid = env['AUTH_WECHATOFFIACCOUNT_CLIENT_ID'];
+	const secret = env['AUTH_WECHATOFFIACCOUNT_CLIENT_SECRET'];
 
 	if (!appid || !secret) return;
 
