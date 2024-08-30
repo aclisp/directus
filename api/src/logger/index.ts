@@ -113,6 +113,7 @@ export const createLogger = () => {
 			stream: pinoPretty({
 				ignore: 'hostname,pid',
 				sync: true,
+				singleLine: true,
 			}),
 		});
 	} else {
