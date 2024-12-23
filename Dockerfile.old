@@ -9,10 +9,8 @@ FROM --platform=linux/amd64 node:${NODE_VERSION}
 
 # ~~ Upgrade the container system software ~~
 RUN \
-    # Change apk repositories
-    sed -i "s#dl-cdn.alpinelinux.org#mirrors.tuna.tsinghua.edu.cn#g" /etc/apk/repositories \
     # Upgrade system and install 'ssmtp' to be able to send mails
-    && apk add --no-cache \
+    apk add --no-cache \
     ssmtp \
     # Add support for specifying the timezone of the container
     # using the "TZ" environment variable.
