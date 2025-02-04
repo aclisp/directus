@@ -47,6 +47,7 @@ TODO
 /schema.json
 /api/uploads/
 /api/extensions/
+/extensions/.registry/
 /tests/blackbox/uploads/
 /tests/blackbox/server-log-*
 /tests/blackbox/sequencer-data.json
