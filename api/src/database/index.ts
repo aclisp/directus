@@ -124,6 +124,12 @@ export function getDatabase(): Knex {
 		knexConfig.useNullAsDefault = true;
 
 		poolConfig.afterCreate = async (conn: any, callback: any) => {
+			if (env['DB_SPATIALITE']) {
+				logger.debug('Enabling SpatiaLite support...');
+				const loadExtension = promisify(conn.loadExtension.bind(conn));
+				await loadExtension(env['DB_SPATIALITE']);
+			}
+
 			logger.trace('Enabling SQLite Foreign Keys support...');
 
 			const run = promisify(conn.run.bind(conn));
