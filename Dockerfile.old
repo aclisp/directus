@@ -16,7 +16,7 @@ RUN \
     # using the "TZ" environment variable.
     tzdata \
     # Add build tools for node packages
-    python3 make g++ \
+    python3 py3-setuptools build-base \
     # Remove apk cache
     && rm -rf /var/cache/apk/* \
     # Change npm registry to a fast mirror
