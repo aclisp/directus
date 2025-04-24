@@ -1,0 +1,14 @@
+###
+
+GET http://localhost:8055/autocare-api/sequence/service_orders/nextval
+Authorization: Bearer o8jtlkQz9ytsuYxf-eZVZOousIalFG-V
+
+###
+
+POST http://localhost:8055/autocare-api/service_orders/75453693-6268-4ec0-bd7c-74ca87df4d65/confirm_reservation
+Authorization: Bearer o8jtlkQz9ytsuYxf-eZVZOousIalFG-V
+
+###
+
+POST http://localhost:8055/autocare-api/service_orders/75453693-6268-4ec0-bd7c-74ca87df4d65/release_reservation
+Authorization: Bearer o8jtlkQz9ytsuYxf-eZVZOousIalFG-V

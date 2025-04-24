@@ -1,0 +1,62 @@
+{
+	"name": "directus-extension-autocare",
+	"description": "Please enter a description for your extension",
+	"icon": "extension",
+	"version": "1.0.0",
+	"license": "UNLICENSED",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-bundle"
+	],
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "bundle",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"entries": [
+			{
+				"type": "endpoint",
+				"name": "autocare-api",
+				"source": "src/autocare-api/index.ts"
+			},
+			{
+				"type": "hook",
+				"name": "autocare-hook",
+				"source": "src/autocare-hook/index.ts"
+			}
+		],
+		"host": "^10.10.0"
+	},
+	"scripts": {
+		"deploy": "directus-extension build --no-minify && bash deploy.sh",
+		"build": "directus-extension build --no-minify",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"validate": "directus-extension validate",
+		"add": "directus-extension add",
+		"test": "vitest run"
+	},
+	"dependencies": {
+		"@directus/api": "workspace:*",
+		"@directus/errors": "workspace:*",
+		"@directus/utils": "workspace:*",
+		"express": "4.21.2",
+		"knex": "3.1.0",
+		"date-fns": "4.1.0",
+		"pino": "9.6.0"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "workspace:*",
+		"@directus/types": "workspace:*",
+		"@types/node": "22.13.8",
+		"@types/express": "4.17.21",
+		"vitest": "2.1.9",
+		"typescript": "5.8.2"
+	}
+}
