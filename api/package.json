@@ -192,6 +192,7 @@
 		"tar": "catalog:",
 		"tsdown": "catalog:",
 		"tsx": "catalog:",
+		"undici": "catalog:",
 		"uuid": "catalog:",
 		"wellknown": "catalog:",
 		"ws": "catalog:",
