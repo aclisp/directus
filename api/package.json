@@ -232,6 +232,7 @@
 		"copyfiles": "catalog:",
 		"form-data": "catalog:",
 		"get-port": "catalog:",
+		"global-agent": "3.0.0",
 		"knex-mock-client": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
