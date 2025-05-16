@@ -1,8 +1,10 @@
 {
 	"compilerOptions": {
+		"sourceMap": true,
 		"target": "ES2019",
-		"lib": ["ES2019", "DOM"],
-		"moduleResolution": "node",
+		"lib": ["ES2021", "DOM"],
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
 		"strict": true,
 		"noFallthroughCasesInSwitch": true,
 		"esModuleInterop": true,
