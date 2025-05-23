@@ -1,8 +1,11 @@
 {
 	"compilerOptions": {
 		"sourceMap": true,
-		"target": "ES2019",
-		"lib": ["ES2021", "DOM"],
+		"target": "ES2022",
+		"lib": [
+			"ES2023",
+			"DOM"
+		],
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
 		"strict": true,
@@ -26,5 +29,7 @@
 		"isolatedModules": true,
 		"rootDir": "./src"
 	},
-	"include": ["./src/**/*.ts"]
+	"include": [
+		"./src/**/*.ts"
+	]
 }

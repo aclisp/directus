@@ -1,9 +1,9 @@
+import { randomUUID } from 'node:crypto';
 import { defineEndpoint } from '@directus/extensions-sdk';
 import asyncHandler from '@directus/api/utils/async-handler';
-import { randomUUID } from 'node:crypto';
-import { InsufficientStock, InsufficientStockDetail, IncorrectOrderStatus, ResourceNotFound } from '../errors.js';
+import type { Knex } from 'knex';
 import { ensureAuthenticated } from '../utils.js';
-import { type Knex } from 'knex';
+import { InsufficientStock, InsufficientStockDetail, IncorrectOrderStatus, ResourceNotFound } from '../errors.js';
 
 async function getWarehouseIdByOrderId(knex: Knex, orderId: string | undefined): Promise<string> {
 	// 检查订单是否存在

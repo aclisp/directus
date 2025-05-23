@@ -22,7 +22,7 @@ export type IncorrectOrderStatusDetail = {
 export const IncorrectOrderStatus = createError<IncorrectOrderStatusDetail>(
 	'INCORRECT_ORDER_STATUS',
 	(detail: IncorrectOrderStatusDetail) => {
-		return `The order status must be "${detail.expecting_status}" instead of "${detail.current_status}"`;
+		return `The order status must be "${detail.expecting_status}"`;
 	},
 	409, // Conflict
 );
@@ -37,4 +37,30 @@ export const ResourceNotFound = createError<ResourceNotFoundDetail>(
 		return `${detail.resource} not found`;
 	},
 	404,
+);
+
+export type RequireTransactionScopeDetail = {
+	scenario: string;
+};
+
+export const RequireTransactionScope = createError<RequireTransactionScopeDetail>(
+	'REQUIRE_TRANSACTION_SCOPE',
+	(detail: RequireTransactionScopeDetail) => {
+		return `Require transactional scope for ${detail.scenario}`;
+	},
+	500,
+);
+
+export type InvalidStateTransitionDetail = {
+	field: string;
+	from: string;
+	to: string;
+};
+
+export const InvalidStateTransition = createError<InvalidStateTransitionDetail>(
+	'INVALID_STATE_TRANSITION',
+	(detail: InvalidStateTransitionDetail) => {
+		return `${detail.field} has invalid state transition from "${detail.from}" to "${detail.to}"`;
+	},
+	400,
 );

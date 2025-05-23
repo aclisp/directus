@@ -2,7 +2,7 @@
  * Custom properties on the req object in express
  */
 
-import { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, Query, SchemaOverview } from '@directus/types';
 
 export {};
 
