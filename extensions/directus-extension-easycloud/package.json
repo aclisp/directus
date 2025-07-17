@@ -50,12 +50,12 @@
 		"@directus/types": "workspace:*",
 		"@directus/extensions": "workspace:*",
 		"socket.io": "4.8.1",
-		"express": "4.21.2"
+		"express": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "workspace:*",
-		"@types/node": "22.13.8",
-		"@types/express": "4.17.21",
-		"typescript": "5.8.2"
+		"@types/node": "catalog:",
+		"@types/express": "catalog:",
+		"typescript": "catalog:"
 	}
 }
