@@ -49,7 +49,7 @@
 	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "workspace:*",
-		"@types/node": "22.13.8",
-		"typescript": "5.8.2"
+		"@types/node": "catalog:",
+		"typescript": "catalog:"
 	}
 }
