@@ -29,7 +29,7 @@ RUN \
     # Resolve argon2
     #&& npm config set argon2_binary_host_mirror "https://npmmirror.com/mirrors/argon2" \
     # Install pnpm
-    && npm install -g pnpm@9.15.6
+    && npm install -g pnpm@10.27.0
 
 WORKDIR /directus
 
