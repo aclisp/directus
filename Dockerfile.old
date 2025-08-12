@@ -17,6 +17,8 @@ RUN \
     tzdata \
     # Add build tools for node packages
     python3 py3-setuptools build-base \
+    # Add sqlite and libspatialite
+    sqlite libspatialite \
     # Remove apk cache
     && rm -rf /var/cache/apk/* \
     # Change npm registry to a fast mirror
@@ -33,18 +35,22 @@ RUN \
 
 WORKDIR /directus
 
+# Deploy as 'node' user to match pnpm setups in production image
+# (see https://github.com/directus/directus/issues/23822)
+RUN chown node:node .
+USER node
+
 # pnpm fetch does require only lockfile
 # (see https://pnpm.io/cli/fetch)
-COPY pnpm-lock.yaml .
-RUN pnpm fetch --prod
+COPY pnpm-lock.yaml pnpm-workspace.yaml .
+RUN pnpm fetch
 
-COPY . .
+COPY --chown=node:node . .
 RUN \
     # Install the dependencies
-    pnpm install --recursive --offline --prod --frozen-lockfile \
+    pnpm install --recursive --offline --frozen-lockfile \
     # Create data directories
-    && mkdir -p database extensions uploads \
-    && chown node:node database extensions uploads
+    && mkdir -p database extensions uploads
 
 # ~~ Setup the environment variables ~~
 ENV NODE_ENV="production" \
@@ -56,6 +62,7 @@ ENV NODE_ENV="production" \
     # (see https://docs.directus.io/self-hosted/config-options.html)
     DB_CLIENT="sqlite3" \
     DB_FILENAME="/directus/database/database.sqlite" \
+    DB_SPATIALITE="/usr/lib/mod_spatialite.so.8" \
     EXTENSIONS_PATH="/directus/extensions" \
     STORAGE_LOCAL_ROOT="/directus/uploads"
 
@@ -64,9 +71,6 @@ VOLUME \
     /directus/database \
     /directus/extensions \
     /directus/uploads
-
-# Switch to user 'node'
-USER node
 
 # Change to the runtime directory
 WORKDIR /directus/api
