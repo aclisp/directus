@@ -67,7 +67,7 @@ Perform CRUD operations on Directus Collections.
 ```json
 {
 	"action": "create",
-	"data": {
+	"data": [{
 		"collection": "articles",
 		"fields": [
 			{
@@ -88,7 +88,7 @@ Perform CRUD operations on Directus Collections.
 			"singleton": false,
 			"display_template": "{{title}}"
 		}
-	}
+	}]
 }
 ```
 
@@ -103,7 +103,7 @@ For content collections (blogs, products, pages), include these optional system 
 ```json
 {
 	"action": "create",
-	"data": {
+	"data": [{
 		"collection": "articles",
 		"fields": [
 			{
@@ -262,7 +262,7 @@ For content collections (blogs, products, pages), include these optional system 
 			"unarchive_value": "draft",
 			"singleton": false
 		}
-	}
+	}]
 }
 ```
 
@@ -290,7 +290,7 @@ For content collections (blogs, products, pages), include these optional system 
 
 // User updated relation
 {
-	"action": "create",
+	"action": "update",
 	"data": {
 		"collection": "articles",
 		"field": "user_updated",
