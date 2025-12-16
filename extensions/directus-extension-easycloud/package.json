@@ -29,6 +29,11 @@
 				"type": "hook",
 				"name": "serve-app",
 				"source": "src/serve-app/index.ts"
+			},
+			{
+				"type": "endpoint",
+				"name": "wechat-proxy",
+				"source": "src/wechat-proxy/index.ts"
 			}
 		]
 	},
@@ -50,12 +55,14 @@
 		"@directus/types": "workspace:*",
 		"@directus/extensions": "workspace:*",
 		"socket.io": "4.8.1",
+		"formidable": "3.5.4",
 		"express": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "workspace:*",
 		"@types/node": "catalog:",
 		"@types/express": "catalog:",
+		"@types/formidable": "3.4.6",
 		"typescript": "catalog:"
 	}
 }
