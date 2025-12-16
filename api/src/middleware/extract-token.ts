@@ -16,7 +16,7 @@ const extractToken: RequestHandler = (req, _res, next) => {
 
 	let token: string | null = null;
 
-	if (req.query && req.query['access_token']) {
+	if (!req.path.startsWith('/wechat-proxy/') && req.query && req.query['access_token']) {
 		token = req.query['access_token'] as string;
 	}
 
