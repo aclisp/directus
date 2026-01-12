@@ -3,9 +3,8 @@ import { readFile } from 'node:fs/promises';
 import type { ServerResponse } from 'node:http';
 import path from 'node:path';
 import { Url } from '@directus/api/utils/url';
-import type { HookExtensionContext } from '@directus/extensions';
 import { defineHook } from '@directus/extensions-sdk';
-import type { InitHandler } from '@directus/types';
+import type { HookExtensionContext, InitHandler } from '@directus/types';
 import type { Express, Request, Response } from 'express';
 import express from 'express';
 

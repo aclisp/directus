@@ -34,6 +34,16 @@
 				"type": "endpoint",
 				"name": "wechat-proxy",
 				"source": "src/wechat-proxy/index.ts"
+			},
+			{
+				"type": "endpoint",
+				"name": "otp-auth",
+				"source": "src/otp-auth/index.ts"
+			},
+			{
+				"type": "hook",
+				"name": "otp-auth-hook",
+				"source": "src/otp-auth-hook/index.ts"
 			}
 		]
 	},
@@ -52,14 +62,17 @@
 	},
 	"dependencies": {
 		"@directus/api": "workspace:*",
-		"@directus/types": "workspace:*",
-		"@directus/extensions": "workspace:*",
+		"@directus/env": "workspace:*",
+		"@directus/errors": "workspace:*",
 		"socket.io": "4.8.1",
 		"formidable": "3.5.4",
-		"express": "catalog:"
+		"express": "catalog:",
+		"nanoid": "catalog:",
+		"rate-limiter-flexible": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "workspace:*",
+		"@directus/types": "workspace:*",
 		"@types/node": "catalog:",
 		"@types/express": "catalog:",
 		"@types/formidable": "3.4.6",
