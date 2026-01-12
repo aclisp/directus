@@ -1,0 +1,25 @@
+//@baseUrl = http://localhost:8055
+@baseUrl = https://cms.aclisp.xyz
+
+POST {{baseUrl}}/wechat-proxy/cgi-bin/stable_token
+Content-Type: application/json
+
+{
+    "grant_type": "client_credential",
+    "appid": "wx3c2941b57d1b22f9",
+    "secret": "bea88431b160bffd59f6c5ade1726fed"
+}
+
+###
+
+POST {{baseUrl}}/wechat-proxy/cgi-bin/material/add_material
+     ?access_token=99_968vjftast7afOJtXr-TDO4RUGGGbyxTHQa8hXi-tTYVseust2WotiFy3p4WJsMoZdCu-yUGBfGLkydGgQzdZ-JJrOhxa26QtdjrYUdzDHeyuod0qUnT56K4RgcPHQbABADVE
+     &type=image
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="media"; filename="1.png"
+Content-Type: image/png
+
+< ./1.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

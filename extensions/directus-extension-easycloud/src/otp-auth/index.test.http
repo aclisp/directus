@@ -1,0 +1,24 @@
+### Root Quest
+
+GET http://localhost:8055/otp-auth
+
+### Generate and Send
+
+POST http://localhost:8055/otp-auth/send
+Content-Type: application/json
+
+{
+    "identifier": "aclisp@gmail.com",
+    "deviceId": "dev"
+}
+
+### Verify
+
+POST http://localhost:8055/otp-auth/verify
+Content-Type: application/json
+
+{
+    "identifier": "aclisp@gmail.com",
+    "deviceId": "dev",
+    "code": "272318"
+}

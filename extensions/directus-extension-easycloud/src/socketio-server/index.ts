@@ -1,6 +1,6 @@
 import * as http from 'node:http';
 import { defineHook } from '@directus/extensions-sdk';
-import { Settings } from '@directus/types';
+import type { Settings } from '@directus/types';
 import { Server, Socket } from 'socket.io';
 
 export default defineHook(({ init, filter, action }, context) => {
