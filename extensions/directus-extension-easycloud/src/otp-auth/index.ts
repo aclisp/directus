@@ -100,9 +100,13 @@ async function generateAndSend(
 		const diffInSeconds = (Date.now() - new Date(lastRequest.created_at).getTime()) / 1000;
 
 		if (diffInSeconds < 60) {
-			return res.status(429).json({
-				error: `Please wait ${60 - Math.round(diffInSeconds)}s before requesting again.`,
-			});
+			const retryAfter = String(60 - Math.round(diffInSeconds));
+			return res
+				.status(429)
+				.set('Retry-After', retryAfter)
+				.json({
+					error: `Please wait ${retryAfter}s before requesting again.`,
+				});
 		}
 	}
 
