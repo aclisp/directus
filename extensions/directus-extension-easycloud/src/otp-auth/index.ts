@@ -1,5 +1,6 @@
 import * as crypto from 'node:crypto';
 import asyncHandler from '@directus/api/utils/async-handler';
+import { getIPFromReq } from '@directus/api/utils/get-ip-from-req';
 import { defineEndpoint } from '@directus/extensions-sdk';
 import type { AbstractServiceOptions, EndpointExtensionContext, User } from '@directus/types';
 import type { Request, Response } from 'express';
@@ -32,7 +33,11 @@ interface OtpResponse {
 }
 
 export default defineEndpoint((router, context) => {
-	//router.post('/', asyncHandler(async (req, res) => await setup(req, res, context)));
+	router.post(
+		'/',
+		asyncHandler(async (req, res) => await setup(req, res, context)),
+	);
+
 	router.post(
 		'/send',
 		checkRateLimit,
@@ -45,13 +50,13 @@ export default defineEndpoint((router, context) => {
 	);
 });
 
-// @ts-expect-error `setup` exists for reference
-async function _setup(_req: Request, res: Response, context: EndpointExtensionContext) {
+async function setup(req: Request, res: Response, context: EndpointExtensionContext) {
 	const { database: knex } = context;
+	const ip = getIPFromReq(req);
 	const hasTable = await knex.schema.hasTable('otp_auth_codes');
 
 	if (hasTable) {
-		return res.send('Table exists!');
+		return res.send('Table exists! I see client IP is ' + ip);
 	}
 
 	await knex.schema.createTable('otp_auth_codes', (table) => {
