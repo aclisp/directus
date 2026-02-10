@@ -44,6 +44,11 @@
 				"type": "hook",
 				"name": "otp-auth-hook",
 				"source": "src/otp-auth-hook/index.ts"
+			},
+			{
+				"type": "endpoint",
+				"name": "simple-auth",
+				"source": "src/simple-auth/index.ts"
 			}
 		]
 	},
@@ -68,7 +73,9 @@
 		"formidable": "3.5.4",
 		"express": "catalog:",
 		"nanoid": "catalog:",
-		"rate-limiter-flexible": "catalog:"
+		"rate-limiter-flexible": "catalog:",
+		"zod": "catalog:",
+		"zod-validation-error": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/extensions-sdk": "workspace:*",

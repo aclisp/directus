@@ -1,0 +1,14 @@
+### Root Quest
+
+GET http://localhost:8055/simple-auth/13600000000
+
+### Sign Up
+
+POST http://localhost:8055/simple-auth/signup
+Content-Type: application/json
+
+{
+    "institution_name": "个人",
+    "phone_number": "13600000000",
+    "password": "123456"
+}
