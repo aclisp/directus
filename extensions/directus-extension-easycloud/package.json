@@ -49,6 +49,11 @@
 				"type": "endpoint",
 				"name": "simple-auth",
 				"source": "src/simple-auth/index.ts"
+			},
+			{
+				"type": "hook",
+				"name": "conceal-sensitive-fields",
+				"source": "src/conceal-sensitive-fields/index.ts"
 			}
 		]
 	},

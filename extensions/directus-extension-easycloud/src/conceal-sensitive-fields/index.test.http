@@ -1,0 +1,7 @@
+### Query ID Number
+
+GET http://localhost:8055/items/cat_awards
+    ?fields=awarded_to,id_number
+    &filter[awarded_to][_eq]=黄悦
+    #&filter[id_number][_starts_with]=1
+    &limit=3
