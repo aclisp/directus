@@ -54,6 +54,11 @@
 				"type": "hook",
 				"name": "conceal-sensitive-fields",
 				"source": "src/conceal-sensitive-fields/index.ts"
+			},
+			{
+				"type": "hook",
+				"name": "housekeeping-cleanup",
+				"source": "src/housekeeping-cleanup/index.ts"
 			}
 		]
 	},
