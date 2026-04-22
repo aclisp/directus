@@ -54,7 +54,7 @@ const ItemsInputSchema = z.object({
 	query: QueryInputSchema.optional(),
 	keys: z.array(PrimaryKeyInputSchema).optional(),
 	data: z
-		.union([z.array(ItemInputSchema), ItemInputSchema])
+		.union([z.array(ItemInputSchema), ItemInputSchema, z.string()])
 		.optional()
 		.describe('Object when using keys, array with PKs for batch updates'),
 });

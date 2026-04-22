@@ -18,7 +18,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export const CollectionsValidateSchema = z.discriminatedUnion('action', [
 	z.strictObject({
 		action: z.literal('create'),
-		data: z.array(CollectionItemValidateCreateSchema),
+		data: z.union([z.array(CollectionItemValidateCreateSchema), CollectionItemValidateCreateSchema]),
 	}),
 	z.strictObject({
 		action: z.literal('read'),
@@ -26,7 +26,7 @@ export const CollectionsValidateSchema = z.discriminatedUnion('action', [
 	}),
 	z.strictObject({
 		action: z.literal('update'),
-		data: z.array(CollectionItemValidateUpdateSchema),
+		data: z.union([z.array(CollectionItemValidateUpdateSchema), CollectionItemValidateUpdateSchema]),
 	}),
 	z.strictObject({
 		action: z.literal('delete'),
@@ -37,7 +37,7 @@ export const CollectionsValidateSchema = z.discriminatedUnion('action', [
 export const CollectionsInputSchema = z.object({
 	action: z.enum(['create', 'read', 'update', 'delete']).describe('The operation to perform'),
 	keys: z.array(z.string()).optional(),
-	data: z.array(CollectionItemInputSchema).optional(),
+	data: z.union([z.array(CollectionItemInputSchema), CollectionItemInputSchema, z.string()]).optional(),
 });
 
 export const collections = defineTool<z.infer<typeof CollectionsValidateSchema>>({
