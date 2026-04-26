@@ -1,20 +1,23 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Debug API",
-            "program": "${workspaceFolder}/api/src/start.ts",
-            "cwd": "${workspaceFolder}/api",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "outFiles": [
-                "${workspaceFolder}/**/dist/**/*.js",
-                "!**/node_modules/**"
-            ],
-            "outputCapture": "std",
-        }
-    ]
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Debug API",
+			"program": "${workspaceFolder}/api/src/start.ts",
+			"env": {
+				"CONFIG_PATH": "/Users/homerh/Documents/Data/scratch/env",
+			},
+			"cwd": "${workspaceFolder}/api",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"outFiles": [
+				"${workspaceFolder}/**/dist/**/*.js",
+				"!**/node_modules/**"
+			],
+			"outputCapture": "std",
+		}
+	]
 }
