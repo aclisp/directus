@@ -12,4 +12,5 @@ export default defineConfig({
 	],
 	unbundle: true,
 	tsconfig: 'tsconfig.prod.json',
+	sourcemap: true,
 });
