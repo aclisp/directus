@@ -220,6 +220,28 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'tableFilter',
+				name: 'Table Filter',
+				type: 'json',
+				meta: {
+					interface: 'system-filter',
+					options: {
+						collectionName: collection,
+					},
+					hidden: true,
+					conditions: [
+						{
+							rule: {
+								layout: {
+									_eq: 'table',
+								},
+							},
+							hidden: false,
+						},
+					],
+				},
+			},
+			{
 				field: 'enableLink',
 				name: '$t:item_link',
 				schema: {

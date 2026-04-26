@@ -52,6 +52,7 @@ const props = withDefaults(
 		enableSelect?: boolean;
 		filter?: Filter | null;
 		enableSearchFilter?: boolean;
+		tableFilter?: Filter | null;
 		enableLink?: boolean;
 		limit?: number;
 		sort?: string;
@@ -119,7 +120,7 @@ const fields = computed(() => {
 const limit = ref(props.limit);
 const page = ref(1);
 const search = ref('');
-const searchFilter = ref<Filter>();
+const searchFilter = ref<Filter | null>(props.tableFilter ?? null);
 
 const manualSort = ref<Sort | null>(
 	props.sort && !relationInfo.value?.sortField ? { by: props.sort, desc: props.sortDirection === '-' } : null,
